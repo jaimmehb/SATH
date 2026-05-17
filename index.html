@@ -512,14 +512,17 @@
             <img src="1000016230.jpg" alt="Fondo del formulario SATH">
         </div>
         <div class="button-group">
-             <button class="button print" onclick="window.print()">
-                 <span>🖨️</span> Generar PDF / Imprimir
+             <button class="button print" onclick="generateAndDownloadPDF()">
+                 <span>📥</span> Descargar PDF Automáticamente
              </button>
              <button class="button secondary" onclick="backToForm()">
                  <span>⬅️</span> Volver al Formulario
              </button>
         </div>
     </div>
+
+    <!-- Librería jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <button id="desktop-mode-btn" class="button desktop-mode" onclick="toggleDesktopMode()">
         <span>🖥️</span> Ver Modo Escritorio
@@ -741,6 +744,161 @@
                 button.innerHTML = '<span>📱</span> Ver Modo Celular';
                 isDesktopMode = true;
             }
+        }
+
+        // Generar y descargar PDF automáticamente
+        async function generateAndDownloadPDF() {
+            const { jsPDF } = window.jspdf;
+            
+            // Mostrar indicador de carga
+            const btn = document.querySelector('.button.print');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span>⏳</span> Generando PDF...';
+            btn.disabled = true;
+
+            try {
+                // Crear documento PDF A4
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                // Obtener la imagen del formulario
+                const imgElement = document.querySelector('#a4-wrapper img');
+                
+                // Convertir imagen a canvas para capturar el contenido completo
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Configurar dimensiones del canvas (A4 a 300 DPI)
+                canvas.width = 2480; // 210mm * 300 DPI / 25.4
+                canvas.height = 3508; // 297mm * 300 DPI / 25.4
+                
+                // Cargar y dibujar imagen de fondo
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = imgElement.src;
+                });
+                
+                // Dibujar imagen de fondo
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // Dibujar textos sobre el canvas
+                const overlayTexts = document.querySelectorAll('#a4-wrapper .overlay-text');
+                
+                overlayTexts.forEach(div => {
+                    const style = window.getComputedStyle(div);
+                    const rect = div.getBoundingClientRect();
+                    const wrapperRect = document.getElementById('a4-wrapper').getBoundingClientRect();
+                    
+                    // Calcular posición relativa en porcentaje
+                    const topPercent = ((rect.top - wrapperRect.top) / wrapperRect.height) * 100;
+                    const leftPercent = ((rect.left - wrapperRect.left) / wrapperRect.width) * 100;
+                    const widthPercent = (rect.width / wrapperRect.width) * 100;
+                    
+                    // Convertir a coordenadas del canvas
+                    const x = (leftPercent / 100) * canvas.width;
+                    const y = (topPercent / 100) * canvas.height + (rect.height / wrapperRect.height * canvas.height * 0.08);
+                    
+                    // Configurar fuente
+                    const fontSize = parseFloat(style.fontSize) * (canvas.width / wrapperRect.width);
+                    ctx.font = `${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
+                    ctx.fillStyle = style.color;
+                    ctx.textAlign = style.textAlign || 'center';
+                    
+                    // Dibujar texto con sombra
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+                    ctx.shadowBlur = 4;
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+                    
+                    // Obtener texto
+                    const text = div.innerText;
+                    
+                    // Dibujar texto
+                    if (ctx.textAlign === 'center') {
+                        ctx.fillText(text, x + (widthPercent / 100) * canvas.width / 2, y);
+                    } else if (ctx.textAlign === 'right') {
+                        ctx.fillText(text, x + (widthPercent / 100) * canvas.width, y);
+                    } else {
+                        ctx.fillText(text, x, y);
+                    }
+                });
+                
+                // Convertir canvas a imagen y agregar al PDF
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                
+                // Agregar imagen al PDF (A4 completo)
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                
+                // Generar nombre del archivo
+                const nombreField = document.getElementById('f_p_custom_5');
+                const fechaField = document.getElementById('f_p_2');
+                const nombre = (nombreField?.value || 'documento').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                const fecha = fechaField?.value || new Date().toISOString().split('T')[0];
+                
+                const filename = `Denuncia_${nombre}_${fecha}.pdf`;
+                
+                // Descargar automáticamente
+                pdf.save(filename);
+                
+                // Mostrar notificación de éxito
+                showNotification('✅ PDF generado y descargado exitosamente', 'success');
+                
+            } catch (error) {
+                console.error('Error al generar PDF:', error);
+                showNotification('❌ Error al generar el PDF. Intente nuevamente.', 'error');
+                
+                // Fallback a impresión normal si falla la generación
+                if (error.message.includes('tainted') || error.message.includes('CORS')) {
+                    showNotification('📋 Abriendo vista de impresión alternativa...', 'warning');
+                    setTimeout(() => window.print(), 1000);
+                }
+            } finally {
+                // Restaurar botón
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Mostrar notificación
+        function showNotification(message, type = 'info') {
+            // Eliminar notificaciones anteriores
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = message;
+            
+            // Estilos de notificación
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1em 2em;
+                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--primary)'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto eliminar después de 4 segundos
+            setTimeout(() => {
+                notification.style.animation = 'fadeIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
         }
 
         // Inicializar
