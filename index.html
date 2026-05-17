@@ -3,180 +3,680 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario SATH (Versión Final)</title>
+    <title>Formulario SATH - Sistema de Registro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #6b7280;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --background: #f3f4f6;
+            --surface: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: system-ui, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background);
+            background-image: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
             margin: 0;
-            padding: 1em;
+            padding: 2em 1em;
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
         }
+
         .container {
-            width: 800px;
+            max-width: 800px;
             margin: auto;
-            background: #fff;
-            padding: 2em;
+            background: var(--surface);
+            padding: 2.5em;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2em;
+            padding-bottom: 1.5em;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 0.5em 0;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1em;
+            margin: 0;
+        }
+
+        /* FORMULARIO */
+        #form-view .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5em;
+            margin-bottom: 2em;
+        }
+
+        .form-group {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:hover {
+            transform: translateY(-2px);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+            font-size: 0.875em;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.2s ease;
+        }
+
+        .form-group:focus-within label {
+            color: var(--primary);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 0.875em 1em;
+            border: 2px solid var(--border);
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
         }
+
+        input:hover {
+            border-color: #d1d5db;
+            background-color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            transform: scale(1.01);
+        }
+
+        input.error {
+            border-color: var(--error);
+            animation: shake 0.3s ease-in-out;
+        }
+
+        input.success {
+            border-color: var(--success);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.75em;
+            margin-top: 0.25em;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* BOTONES */
+        .button-group {
+            display: flex;
+            gap: 1em;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2em;
+        }
+
         .button {
-            display: inline-block; padding: 12px 22px; font-size: 1em; font-weight: bold;
-            color: white; background-color: #0d6efd; border: none; border-radius: 5px; cursor: pointer; margin-top: 1em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            padding: 0.875em 2em;
+            font-size: 1em;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
         }
-        .button.secondary { background-color: #6c757d; margin-left: 10px;}
-        .button.print { background-color: #198754; }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
+        }
+
+        .button.secondary {
+            background-color: var(--secondary);
+        }
+
+        .button.secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .button.print {
+            background-color: var(--success);
+        }
+
+        .button.print:hover {
+            background-color: #059669;
+        }
+
         .button.desktop-mode {
             display: none;
             position: fixed;
-            bottom: 10px;
-            right: 10px;
+            bottom: 20px;
+            right: 20px;
             z-index: 1000;
-            background-color: #ffc107;
-            color: black;
+            background-color: var(--warning);
+            color: var(--text-primary);
         }
 
-        /* VISTA 1: FORMULARIO */
-        #form-view h1 { font-size: 1.8em; }
-        #form-view p { text-align: center; color: #333; }
-        #form-view .form-group { margin-bottom: 1em; }
-        #form-view label { display: block; margin-bottom: 5px; font-weight: 600; }
-        #form-view input[type="text"] {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em;
+        .button.desktop-mode:hover {
+            background-color: #d97706;
         }
-        
-        /* VISTA 2: PREVISUALIZACIÓN */
-        #preview-container { display: none; width: 100%; text-align: center; }
+
+        /* VISTA PREVIA */
+        #preview-container {
+            display: none;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
         #a4-wrapper {
-            position: relative; width: 210mm; height: 297mm; margin: auto;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            position: relative;
+            width: 210mm;
+            height: 297mm;
+            margin: auto;
+            box-shadow: var(--shadow-lg);
             overflow: hidden;
             background-color: white;
+            border-radius: 4px;
         }
-        #a4-wrapper img { width: 100%; height: 100%; }
+
+        #a4-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .overlay-text {
             position: absolute;
-            white-space: nowrap; overflow: hidden;
-            padding: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 2px 4px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         }
-        
-        /* --- ESTILOS DE TU PLANTILLA --- */
-        #p_1 { top: 17.63%; left: 56.80%; width: 15.74%; height: 3.03%; font-family: "Arial Black", sans-serif; font-size: 15px; color: rgb(0, 0, 0); font-weight: normal; text-align: center; }
-        #p_2 { top: 17.72%; left: 73.42%; width: 15.74%; height: 3.03%; font-family: "Arial Black", sans-serif; font-size: 15px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
-        #p_3 { top: 27.87%; left: 28.21%; width: 15.74%; height: 3.03%; font-family: Helvetica, sans-serif; font-size: 14px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
-        #p_custom_1 { top: 27.69%; left: 8.56%; width: 20.27%; height: 2.40%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
-        #p_custom_2 { top: 24.75%; left: 18.76%; width: 20.65%; height: 3.47%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
-        #p_custom_3 { top: 28.05%; left: 45.84%; width: 39.67%; height: 1.78%; font-family: Verdana, sans-serif; font-size: 13px; color: rgb(0, 0, 0); font-weight: normal; text-align: center; }
-        #p_custom_5 { top: 24.93%; left: 45.34%; width: 42.44%; height: 2.13%; font-family: Verdana, sans-serif; font-size: 13px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
-        #p_custom_6 { top: 31.25%; left: 15.36%; width: 60.07%; height: 2.04%; font-family: Verdana, sans-serif; font-size: 13px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
+
+        /* POSICIONES DE CAMPOS */
+        #p_1 { top: 17.63%; left: 56.80%; width: 15.74%; height: 3.03%; font-family: "Arial Black", sans-serif; font-size: 15px; color: rgb(0, 0, 0); text-align: center; }
+        #p_2 { top: 17.72%; left: 73.42%; width: 15.74%; height: 3.03%; font-family: "Arial Black", sans-serif; font-size: 15px; color: rgb(0, 0, 0); text-align: center; }
+        #p_3 { top: 27.87%; left: 28.21%; width: 15.74%; height: 3.03%; font-family: Helvetica, sans-serif; font-size: 14px; color: rgb(0, 0, 0); text-align: center; }
+        #p_custom_1 { top: 27.69%; left: 8.56%; width: 20.27%; height: 2.40%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); text-align: center; }
+        #p_custom_2 { top: 24.75%; left: 18.76%; width: 20.65%; height: 3.47%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); text-align: center; }
+        #p_custom_3 { top: 28.05%; left: 45.84%; width: 39.67%; height: 1.78%; font-family: Verdana, sans-serif; font-size: 13px; color: rgb(0, 0, 0); text-align: center; }
+        #p_custom_5 { top: 24.93%; left: 45.34%; width: 42.44%; height: 2.13%; font-family: Verdana, sans-serif; font-size: 13px; color: rgb(0, 0, 0); text-align: center; }
+        #p_custom_6 { top: 31.25%; left: 15.36%; width: 60.07%; height: 2.04%; font-family: Verdana, sans-serif; font-size: 13px; color: rgb(0, 0, 0); text-align: center; }
         #p_custom_7 { top: 44.70%; left: 24.05%; width: 12.72%; height: 2.22%; font-family: "Arial Black", sans-serif; font-size: 13px; color: rgb(0, 0, 0); font-weight: 700; text-align: center; }
         #p_custom_8 { top: 44.88%; left: 42.57%; width: 13.85%; height: 2.22%; font-family: "Arial Black", sans-serif; font-size: 13px; color: rgb(0, 0, 0); font-weight: 700; text-align: center; }
-        #p_custom_10 { top: 6.41%; left: 64.73%; width: 3.65%; height: 2.76%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
-        #p_custom_11 { top: 6.32%; left: 70.15%; width: 9.32%; height: 2.76%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); font-weight: 400; text-align: center; }
+        #p_custom_10 { top: 6.41%; left: 64.73%; width: 3.65%; height: 2.76%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); text-align: center; }
+        #p_custom_11 { top: 6.32%; left: 70.15%; width: 9.32%; height: 2.76%; font-family: Arial, sans-serif; font-size: 14px; color: rgb(0, 0, 0); text-align: center; }
 
+        /* RESPONSIVE */
         @media (max-width: 850px) {
-            .button.desktop-mode { display: inline-block; }
-            body { padding: 0.5em; }
-            .container { width: 100%; padding: 1.5em; box-sizing: border-box; }
-            #a4-wrapper { width: 100%; height: auto; aspect-ratio: 210 / 297; margin: 0; }
-            .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-            .button.secondary { margin-left: 0; }
+            .button.desktop-mode { display: inline-flex; }
+            body { padding: 1em 0.5em; }
+            .container { 
+                width: 100%; 
+                padding: 1.5em; 
+                border-radius: 0;
+                box-shadow: none;
+            }
+            #a4-wrapper { 
+                width: 100%; 
+                height: auto; 
+                aspect-ratio: 210 / 297; 
+                margin: 0;
+                border-radius: 8px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .button {
+                width: 100%;
+            }
         }
-        .force-desktop-view { width: 850px !important; overflow-x: auto; }
 
+        .force-desktop-view { 
+            max-width: 850px !important; 
+            overflow-x: auto; 
+        }
+
+        /* PRINT */
         @media print {
-            @page { size: A4 portrait; margin: 0; }
-            body, html { margin: 0 !important; padding: 0 !important; width: 210mm; height: 297mm; }
-            #form-view, .button-group, .button.desktop-mode { display: none !important; }
-            #preview-container { display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-            #a4-wrapper { box-shadow: none; width: 100%; height: 100%; }
+            @page { 
+                size: A4 portrait; 
+                margin: 0; 
+            }
+            body, html { 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                width: 210mm; 
+                height: 297mm;
+                background: white;
+            }
+            #form-view, .button-group, .button.desktop-mode, header { 
+                display: none !important; 
+            }
+            #preview-container { 
+                display: block !important; 
+                position: absolute; 
+                top: 0; 
+                left: 0; 
+                width: 100%; 
+                height: 100%; 
+            }
+            #a4-wrapper { 
+                box-shadow: none; 
+                width: 100%; 
+                height: 100%;
+                border-radius: 0;
+            }
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+        }
+
+        /* ANIMACIONES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* SECCIONES DEL FORMULARIO */
+        .form-section {
+            grid-column: 1 / -1;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--primary);
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1em;
+            animation: slideIn 0.5s ease;
+        }
+
+        /* INDICADOR DE CAMPO OPCIONAL */
+        label::after {
+            content: ' (opcional)';
+            font-size: 0.75em;
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        label:has(+ input[required])::after,
+        label:has(+ input[minlength])::after {
+            content: '';
         }
     </style>
 </head>
 <body>
 
     <div id="form-view" class="container">
-        <h1>Formulario de Datos</h1>
-        <p>Rellena la información para generar el documento.</p>
-        <div id="dynamic-form-container"></div>
-        <div style="text-align:center;">
-            <button class="button" onclick="showPreview()">Previsualizar Documento</button>
-        </div>
+        <header>
+            <h1>📋 Formulario SATH</h1>
+            <p class="subtitle">Complete los datos para generar su documento</p>
+        </header>
+        
+        <form id="sath-form" onsubmit="return false;">
+            <div class="form-grid">
+                
+                <div class="form-section">
+                    <h2 class="section-title">Información Personal</h2>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_5">Apellidos y Nombres</label>
+                    <input type="text" id="f_p_custom_5" data-target-id="p_custom_5" minlength="3" placeholder="Ingrese sus apellidos y nombres">
+                    <span class="error-message">Por favor ingrese un nombre válido (mínimo 3 caracteres)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_2">DNI</label>
+                    <input type="text" id="f_p_custom_2" data-target-id="p_custom_2" pattern="\d{8}" maxlength="8" placeholder="8 dígitos sin puntos ni guiones">
+                    <span class="error-message">El DNI debe tener 8 dígitos numéricos</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_6">Dirección</label>
+                    <input type="text" id="f_p_custom_6" data-target-id="p_custom_6" minlength="5" placeholder="Ingrese su dirección completa">
+                    <span class="error-message">Por favor ingrese una dirección válida</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_3">Correo Electrónico</label>
+                    <input type="email" id="f_p_custom_3" data-target-id="p_custom_3" placeholder="ejemplo@correo.com">
+                    <span class="error-message">Por favor ingrese un correo electrónico válido</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_3">Teléfono Móvil</label>
+                    <input type="tel" id="f_p_3" data-target-id="p_3" pattern="\d{9}" maxlength="9" placeholder="9 dígitos">
+                    <span class="error-message">El teléfono debe tener 9 dígitos numéricos</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_1">Teléfono Fijo</label>
+                    <input type="tel" id="f_p_custom_1" data-target-id="p_custom_1" pattern="\d{7,9}" maxlength="9" placeholder="Opcional">
+                    <span class="error-message">Ingrese un número telefónico válido</span>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Datos del Documento</h2>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_1">Papeleta Nro.</label>
+                    <input type="text" id="f_p_1" data-target-id="p_1" maxlength="10" placeholder="Número de papeleta">
+                    <span class="error-message">Ingrese el número de papeleta</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_7">Papeleta Nro. (Repetición)</label>
+                    <input type="text" id="f_p_custom_7" data-target-id="p_custom_7" readonly style="background-color: #f3f4f6; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_2">Fecha</label>
+                    <input type="text" id="f_p_2" data-target-id="p_2" maxlength="10" placeholder="DD.MM.AAAA">
+                    <span class="error-message">Ingrese una fecha válida (DD.MM.AAAA)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_8">Fecha (Repetición)</label>
+                    <input type="text" id="f_p_custom_8" data-target-id="p_custom_8" readonly style="background-color: #f3f4f6; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_10">Día</label>
+                    <input type="text" id="f_p_custom_10" data-target-id="p_custom_10" maxlength="2" readonly style="background-color: #f3f4f6; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label for="f_p_custom_11">Mes</label>
+                    <input type="text" id="f_p_custom_11" data-target-id="p_custom_11" readonly style="background-color: #f3f4f6; cursor: not-allowed;">
+                </div>
+
+            </div>
+
+            <div class="button-group">
+                <button class="button" onclick="validateAndPreview()">
+                    <span>👁️</span> Previsualizar Documento
+                </button>
+                <button class="button secondary" onclick="resetForm()">
+                    <span>🔄</span> Limpiar Formulario
+                </button>
+            </div>
+        </form>
     </div>
 
     <div id="preview-container">
         <div id="a4-wrapper">
-            <img src="1000016230.jpg" alt="Fondo del formulario">
+            <img src="1000016230.jpg" alt="Fondo del formulario SATH">
         </div>
-        <div class="button-group" style="margin-top:15px;">
-             <button class="button print" onclick="window.print()">Generar PDF</button>
-             <button class="button secondary" onclick="backToForm()">Volver al Formulario</button>
+        <div class="button-group">
+             <button class="button print" onclick="window.print()">
+                 <span>🖨️</span> Generar PDF / Imprimir
+             </button>
+             <button class="button secondary" onclick="backToForm()">
+                 <span>⬅️</span> Volver al Formulario
+             </button>
         </div>
     </div>
     
-    <button id="desktop-mode-btn" class="button desktop-mode" onclick="toggleDesktopMode()">Ver Modo Escritorio 🖥️</button>
+    <button id="desktop-mode-btn" class="button desktop-mode" onclick="toggleDesktopMode()">
+        <span>🖥️</span> Ver Modo Escritorio
+    </button>
 
     <script>
-        const templateFields = [
-            { id: 'p_1', label: 'PAPELETA NRO.' }, { id: 'p_2', label: 'FECHA' },
-            { id: 'p_3', label: 'TELEFONO MOVIL' }, { id: 'p_custom_1', label: 'TELÉFONO FIJO' },
-            { id: 'p_custom_2', label: 'DNI' }, { id: 'p_custom_3', label: 'CORREO ELECTRÓNICO' },
-            { id: 'p_custom_5', label: 'APELLIDOS Y NOMBRES' }, { id: 'p_custom_6', label: 'DIRECCIÓN' },
-            { id: 'p_custom_7', label: 'PAPELETA NRO.' }, { id: 'p_custom_8', label: 'FECHA' },
-            { id: 'p_custom_10', label: 'FECHA DÍA' }, { id: 'p_custom_11', label: 'FECHA MES' },
+        const formFields = [
+            { id: 'p_1', label: 'Papeleta Nro.', type: 'text', required: false },
+            { id: 'p_2', label: 'Fecha', type: 'date', required: false },
+            { id: 'p_3', label: 'Teléfono Móvil', type: 'tel', required: false },
+            { id: 'p_custom_1', label: 'Teléfono Fijo', type: 'tel', required: false },
+            { id: 'p_custom_2', label: 'DNI', type: 'text', required: false },
+            { id: 'p_custom_3', label: 'Correo Electrónico', type: 'email', required: false },
+            { id: 'p_custom_5', label: 'Apellidos y Nombres', type: 'text', required: false },
+            { id: 'p_custom_6', label: 'Dirección', type: 'text', required: false },
+            { id: 'p_custom_7', label: 'Papeleta Nro.', type: 'text', required: false, readonly: true },
+            { id: 'p_custom_8', label: 'Fecha', type: 'text', required: false, readonly: true },
+            { id: 'p_custom_10', label: 'Día', type: 'text', required: false, readonly: true },
+            { id: 'p_custom_11', label: 'Mes', type: 'text', required: false, readonly: true },
         ];
-        
+
         const wrapper = document.getElementById('a4-wrapper');
+        let isDesktopMode = false;
 
-        function createForm() {
-            const formContainer = document.getElementById('dynamic-form-container');
-            formContainer.innerHTML = '';
-            templateFields.forEach(field => {
-                const group = document.createElement('div');
-                group.className = 'form-group';
-                const label = document.createElement('label');
-                label.htmlFor = `f_${field.id}`;
-                label.innerText = field.label;
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.id = `f_${field.id}`;
-                input.dataset.targetId = field.id;
-                group.appendChild(label);
-                group.appendChild(input);
-                formContainer.appendChild(group);
+        // Inicializar validaciones en tiempo real
+        function initValidations() {
+            const inputs = document.querySelectorAll('#sath-form input:not([readonly])');
+            
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => validateField(input));
+                input.addEventListener('input', () => {
+                    if (input.classList.contains('error')) {
+                        validateField(input);
+                    }
+                });
+            });
+        }
 
-                // --- LÓGICA DE AUTOCOMPLETADO Y FORMATO ---
-                if (field.label === 'FECHA') {
-                    input.addEventListener('input', formatAndSyncDate);
+        // Validar campo individual
+        function validateField(input) {
+            const errorSpan = input.parentElement.querySelector('.error-message');
+            const isRequired = input.hasAttribute('required');
+            const value = input.value.trim();
+
+            // Si el campo está vacío y no es requerido, es válido
+            if (!value && !isRequired) {
+                clearError(input, errorSpan);
+                return true;
+            }
+
+            // Si el campo está vacío y es requerido, mostrar error
+            if (!value && isRequired) {
+                showError(input, errorSpan);
+                return false;
+            }
+
+            // Validaciones específicas solo si hay valor
+            if (input.type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    showError(input, errorSpan);
+                    return false;
                 }
-                if (field.label === 'PAPELETA NRO.') {
-                    input.addEventListener('input', syncField);
+            }
+
+            if (input.pattern) {
+                const regex = new RegExp(input.pattern);
+                if (!regex.test(value)) {
+                    showError(input, errorSpan);
+                    return false;
+                }
+            }
+
+            if (input.minLength > 0 && value.length < input.minLength) {
+                showError(input, errorSpan);
+                return false;
+            }
+
+            clearError(input, errorSpan);
+            return true;
+        }
+
+        function showError(input, errorSpan) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            if (errorSpan) errorSpan.classList.add('visible');
+        }
+
+        function clearError(input, errorSpan) {
+            input.classList.remove('error');
+            input.classList.add('success');
+            if (errorSpan) errorSpan.classList.remove('visible');
+        }
+
+        // Validar todo el formulario
+        function validateAndPreview() {
+            const inputs = document.querySelectorAll('#sath-form input:not([readonly])');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    isValid = false;
                 }
             });
+
+            if (isValid) {
+                showPreview();
+            } else {
+                // Scroll al primer campo con error
+                const firstError = document.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
 
         function syncField(e) {
             const sourceId = e.target.id;
             const sourceLabel = document.querySelector(`label[for="${sourceId}"]`).innerText;
             const value = e.target.value;
-            const allInputs = document.querySelectorAll('#dynamic-form-container input');
+            const allInputs = document.querySelectorAll('#sath-form input');
             
             allInputs.forEach(input => {
+                if (input.hasAttribute('readonly')) return;
                 const labelText = document.querySelector(`label[for="${input.id}"]`).innerText;
                 if (input.id !== sourceId && labelText === sourceLabel) {
                     input.value = value;
+                    validateField(input);
                 }
             });
         }
 
         function formatAndSyncDate(e) {
-            let value = e.target.value.replace(/\D/g, ''); // Eliminar no números
+            let value = e.target.value.replace(/\D/g, '');
             if (value.length > 2) value = value.slice(0, 2) + '.' + value.slice(2);
             if (value.length > 5) value = value.slice(0, 5) + '.' + value.slice(5);
             if (value.length > 10) value = value.slice(0, 10);
             e.target.value = value;
-            syncField(e); // Sincronizar el valor ya formateado
+            
+            // Extraer día y mes
+            const parts = value.split('.');
+            const dayInput = document.getElementById('f_p_custom_10');
+            const monthInput = document.getElementById('f_p_custom_11');
+            
+            if (parts.length >= 1) dayInput.value = parts[0] || '';
+            if (parts.length >= 2) monthInput.value = capitalize(getMonthName(parts[1])) || '';
+            
+            syncField(e);
+        }
+
+        function getMonthName(monthNum) {
+            const months = [
+                '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            const num = parseInt(monthNum);
+            return (num >= 1 && num <= 12) ? months[num] : monthNum;
         }
 
         function capitalize(str) {
@@ -185,44 +685,115 @@
         }
 
         function showPreview() {
-            wrapper.innerHTML = '<img src="1000016230.jpg" alt="Fondo del formulario">';
-            const inputs = document.querySelectorAll('#dynamic-form-container input');
+            wrapper.innerHTML = '<img src="1000016230.jpg" alt="Fondo del formulario SATH">';
+            const inputs = document.querySelectorAll('#sath-form input[data-target-id]');
             
             inputs.forEach(input => {
                 const targetId = input.dataset.targetId;
                 const fieldDiv = document.createElement('div');
                 fieldDiv.id = targetId;
                 fieldDiv.className = 'overlay-text';
+                
                 if (targetId === 'p_custom_11') {
                     fieldDiv.innerText = capitalize(input.value);
                 } else {
                     fieldDiv.innerText = input.value.toUpperCase();
                 }
+                
                 wrapper.appendChild(fieldDiv);
             });
+            
             document.getElementById('form-view').style.display = 'none';
             document.getElementById('preview-container').style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
         function backToForm() {
             document.getElementById('preview-container').style.display = 'none';
             document.getElementById('form-view').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function resetForm() {
+            if (confirm('¿Está seguro de que desea limpiar todos los campos?')) {
+                document.getElementById('sath-form').reset();
+                const inputs = document.querySelectorAll('#sath-form input');
+                inputs.forEach(input => {
+                    input.classList.remove('error', 'success');
+                    const errorSpan = input.parentElement.querySelector('.error-message');
+                    if (errorSpan) errorSpan.classList.remove('visible');
+                });
+            }
         }
 
         function toggleDesktopMode() {
             const viewportMeta = document.querySelector('meta[name="viewport"]');
             const button = document.getElementById('desktop-mode-btn');
-            if (document.body.classList.contains('force-desktop-view')) {
+            
+            if (isDesktopMode) {
                 document.body.classList.remove('force-desktop-view');
                 viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
-                button.innerHTML = 'Ver Modo Escritorio 🖥️';
+                button.innerHTML = '<span>🖥️</span> Ver Modo Escritorio';
+                isDesktopMode = false;
             } else {
                 document.body.classList.add('force-desktop-view');
                 viewportMeta.setAttribute('content', 'width=850');
-                button.innerHTML = 'Ver Modo Celular 📱';
+                button.innerHTML = '<span>📱</span> Ver Modo Celular';
+                isDesktopMode = true;
             }
         }
-        window.onload = createForm;
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            initValidations();
+            
+            // Configurar listeners para sincronización
+            const dateInputs = ['f_p_2', 'f_p_custom_8'];
+            dateInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.addEventListener('input', formatAndSyncDate);
+            });
+
+            const papeletaInputs = ['f_p_1', 'f_p_custom_7'];
+            papeletaInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input && !input.hasAttribute('readonly')) {
+                    input.addEventListener('input', syncField);
+                }
+            });
+
+            // Agregar animación de entrada a los campos
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.animation = `slideIn 0.5s ease ${index * 0.05}s backwards`;
+            });
+
+            // Efecto de conteo en los botones
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function(e) {
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const ripple = document.createElement('span');
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.4);
+                        transform: scale(0);
+                        animation: pulse 0.6s linear;
+                        left: ${x}px;
+                        top: ${y}px;
+                        width: 100px;
+                        height: 100px;
+                        margin-left: -50px;
+                        margin-top: -50px;
+                    `;
+                    button.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
     </script>
 </body>
 </html>
