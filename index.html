@@ -405,6 +405,348 @@
         label:has(+ input[minlength])::after {
             content: '';
         }
+
+        /* MODO EDITOR DIOS */
+        #god-mode-panel {
+            position: fixed;
+            top: 50%;
+            right: -320px;
+            transform: translateY(-50%);
+            width: 320px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: linear-gradient(135deg, #1e1e2f 0%, #2d2d44 100%);
+            border-radius: 16px 0 0 16px;
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4);
+            z-index: 100000;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 20px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #god-mode-panel.active {
+            right: 0;
+        }
+
+        #god-mode-toggle {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 120px;
+            background: linear-gradient(180deg, #ffd700 0%, #ffaa00 100%);
+            border: none;
+            border-radius: 12px 0 0 12px;
+            cursor: pointer;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-weight: 700;
+            font-size: 14px;
+            color: #1e1e2f;
+            box-shadow: -4px 0 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        #god-mode-toggle:hover {
+            width: 60px;
+            box-shadow: -6px 0 30px rgba(255, 215, 0, 0.6);
+        }
+
+        .god-mode-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .god-mode-header h3 {
+            margin: 0;
+            font-size: 18px;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .god-mode-section {
+            margin-bottom: 20px;
+        }
+
+        .god-mode-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .god-mode-section-title::before {
+            content: '⚡';
+        }
+
+        .color-picker-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffd700;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .page-duplicate-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .page-duplicate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .page-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .page-tab {
+            flex: 1;
+            min-width: 50px;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .page-tab.active {
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: #1e1e2f;
+            font-weight: 700;
+        }
+
+        .generate-code-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .generate-code-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        }
+
+        .edit-mode-indicator {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #ff6b6b, #ffd700);
+            color: #1e1e2f;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            z-index: 99998;
+            display: none;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .edit-mode-indicator.visible {
+            display: block;
+        }
+
+        .editable-element {
+            outline: 2px dashed transparent;
+            transition: outline-color 0.3s ease;
+        }
+
+        .editable-element:hover {
+            outline-color: #ffd700;
+            cursor: pointer;
+        }
+
+        .editable-element.editing {
+            outline-color: #ff6b6b;
+            outline-style: solid;
+        }
+
+        #code-output-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #code-output-modal.visible {
+            display: flex;
+        }
+
+        .code-modal-content {
+            background: #1e1e2f;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .code-modal-header h3 {
+            margin: 0;
+            color: #fff;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        #code-output-textarea {
+            width: 100%;
+            height: 400px;
+            background: #0d0d1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            color: #38ef7d;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: none;
+            overflow: auto;
+        }
+
+        .copy-code-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: #1e1e2f;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            align-self: flex-end;
+            transition: all 0.3s ease;
+        }
+
+        .copy-code-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -527,6 +869,264 @@
     <button id="desktop-mode-btn" class="button desktop-mode" onclick="toggleDesktopMode()">
         <span>🖥️</span> Ver Modo Escritorio
     </button>
+
+    <!-- MODO EDITOR DIOS -->
+    <button id="god-mode-toggle" onclick="toggleGodMode()">
+        👑 MODO<br>EDITOR<br>DIOS
+    </button>
+
+    <div id="god-mode-panel">
+        <div class="god-mode-header">
+            <h3>👑 MODO EDITOR DIOS</h3>
+            <p style="font-size: 11px; opacity: 0.7; margin: 5px 0 0 0;">Edita todo en tiempo real</p>
+        </div>
+
+        <div class="god-mode-section">
+            <div class="god-mode-section-title">Páginas</div>
+            <div class="page-tabs" id="page-tabs"></div>
+            <button class="page-duplicate-btn" onclick="duplicatePage()">
+                <span>📄</span> Duplicar Página
+            </button>
+        </div>
+
+        <div class="god-mode-section">
+            <div class="god-mode-section-title">Colores del Tema</div>
+            <div class="color-picker-group">
+                <div class="color-option" style="background: #2563eb;" data-color="--primary" onclick="changeColor('--primary', '#2563eb')"></div>
+                <div class="color-option" style="background: #dc2626;" data-color="--primary" onclick="changeColor('--primary', '#dc2626')"></div>
+                <div class="color-option" style="background: #16a34a;" data-color="--primary" onclick="changeColor('--primary', '#16a34a')"></div>
+                <div class="color-option" style="background: #9333ea;" data-color="--primary" onclick="changeColor('--primary', '#9333ea')"></div>
+                <div class="color-option" style="background: #ea580c;" data-color="--primary" onclick="changeColor('--primary', '#ea580c')"></div>
+                <div class="color-option" style="background: #0891b2;" data-color="--primary" onclick="changeColor('--primary', '#0891b2')"></div>
+            </div>
+            <input type="color" id="custom-primary-color" value="#2563eb" onchange="changeColor('--primary', this.value)" style="width: 100%; height: 40px; border: none; border-radius: 8px; cursor: pointer;">
+        </div>
+
+        <div class="god-mode-section">
+            <div class="god-mode-section-title">Tamaño de Fuente Global</div>
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>Zoom</span>
+                    <span id="zoom-value">100%</span>
+                </div>
+                <input type="range" min="50" max="150" value="100" oninput="changeZoom(this.value)">
+            </div>
+        </div>
+
+        <div class="god-mode-section">
+            <div class="god-mode-section-title">Elementos Editables</div>
+            <div style="font-size: 11px; opacity: 0.7; margin-bottom: 10px;">Haz clic en cualquier elemento para editarlo</div>
+            <button class="page-duplicate-btn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="enableEditMode()">
+                <span>✏️</span> Activar Edición
+            </button>
+        </div>
+
+        <div class="god-mode-section">
+            <div class="god-mode-section-title">Estilos Predefinidos</div>
+            <button class="page-duplicate-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="applyStyle('modern')">
+                🎨 Moderno
+            </button>
+            <button class="page-duplicate-btn" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" onclick="applyStyle('nature')">
+                🌿 Naturaleza
+            </button>
+            <button class="page-duplicate-btn" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" onclick="applyStyle('sunset')">
+                🌅 Atardecer
+            </button>
+            <button class="page-duplicate-btn" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);" onclick="applyStyle('dark')">
+                🌙 Oscuro
+            </button>
+        </div>
+
+        <button class="generate-code-btn" onclick="generateCode()">
+            <span>💾</span> Generar Código
+        </button>
+    </div>
+
+    <div class="edit-mode-indicator" id="edit-mode-indicator">
+        ✏️ MODO EDICIÓN ACTIVO - Haz clic en los elementos para editar
+    </div>
+
+    <div id="code-output-modal">
+        <div class="code-modal-content">
+            <div class="code-modal-header">
+                <h3>📋 Código Generado</h3>
+                <button class="close-modal" onclick="closeCodeModal()">×</button>
+            </div>
+            <textarea id="code-output-textarea" readonly></textarea>
+            <button class="copy-code-btn" onclick="copyCodeToClipboard()">
+                <span>📋</span> Copiar Código
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // ==================== MODO EDITOR DIOS ====================
+        let godModeActive = false;
+        let editModeActive = false;
+        let currentPage = 1;
+        const pages = {
+            1: { styles: {}, elements: {} }
+        };
+
+        function toggleGodMode() {
+            godModeActive = !godModeActive;
+            document.getElementById('god-mode-panel').classList.toggle('active', godModeActive);
+            updatePageTabs();
+        }
+
+        function updatePageTabs() {
+            const tabsContainer = document.getElementById('page-tabs');
+            tabsContainer.innerHTML = '';
+            
+            Object.keys(pages).forEach(pageNum => {
+                const tab = document.createElement('button');
+                tab.className = `page-tab ${pageNum == currentPage ? 'active' : ''}`;
+                tab.textContent = `Pág ${pageNum}`;
+                tab.onclick = () => switchPage(parseInt(pageNum));
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        function switchPage(pageNum) {
+            currentPage = pageNum;
+            updatePageTabs();
+            showNotification(`Página ${pageNum} seleccionada`, 'info');
+        }
+
+        function duplicatePage() {
+            const newPageNum = Object.keys(pages).length + 1;
+            pages[newPageNum] = JSON.parse(JSON.stringify(pages[currentPage]));
+            currentPage = newPageNum;
+            updatePageTabs();
+            showNotification(`✅ Página ${newPageNum} duplicada`, 'success');
+        }
+
+        function changeColor(variable, color) {
+            document.documentElement.style.setProperty(variable, color);
+            
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.classList.remove('active');
+                if (opt.dataset.color === variable) {
+                    opt.classList.add('active');
+                }
+            });
+            
+            if (!pages[currentPage].styles) pages[currentPage].styles = {};
+            pages[currentPage].styles[variable] = color;
+        }
+
+        function changeZoom(value) {
+            document.getElementById('zoom-value').textContent = value + '%';
+            document.body.style.zoom = value / 100;
+        }
+
+        function enableEditMode() {
+            editModeActive = !editModeActive;
+            document.getElementById('edit-mode-indicator').classList.toggle('visible', editModeActive);
+            
+            if (editModeActive) {
+                makeElementsEditable();
+            } else {
+                disableEditMode();
+            }
+        }
+
+        function makeElementsEditable() {
+            const editableSelectors = ['h1', 'h2', 'h3', 'p', 'label', 'span', 'button', '.container'];
+            
+            editableSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.classList.add('editable-element');
+                    el.onclick = (e) => {
+                        if (!editModeActive) return;
+                        e.stopPropagation();
+                        editElement(el);
+                    };
+                });
+            });
+        }
+
+        function editElement(el) {
+            if (el.classList.contains('editing')) return;
+            
+            document.querySelectorAll('.editing').forEach(e => e.classList.remove('editing'));
+            
+            el.classList.add('editing');
+            
+            const currentText = el.innerText || el.textContent;
+            const newText = prompt('Editar texto:', currentText);
+            
+            if (newText !== null) {
+                if (el.tagName === 'BUTTON') {
+                    el.innerHTML = newText;
+                } else {
+                    el.innerText = newText;
+                }
+                
+                const elementId = el.id || `class-${el.className}`;
+                if (!pages[currentPage].elements) pages[currentPage].elements = {};
+                pages[currentPage].elements[elementId] = newText;
+            }
+            
+            el.classList.remove('editing');
+        }
+
+        function disableEditMode() {
+            document.querySelectorAll('.editable-element').forEach(el => {
+                el.classList.remove('editable-element');
+                el.onclick = null;
+            });
+        }
+
+        function applyStyle(styleName) {
+            const styles = {
+                modern: { '--primary': '#2563eb', '--background': '#f8fafc', '--surface': '#ffffff' },
+                nature: { '--primary': '#16a34a', '--background': '#f0fdf4', '--surface': '#ffffff' },
+                sunset: { '--primary': '#ea580c', '--background': '#fffbeb', '--surface': '#ffffff' },
+                dark: { '--primary': '#8b5cf6', '--background': '#0f172a', '--surface': '#1e293b', '--text-primary': '#f1f5f9', '--text-secondary': '#94a3b8' }
+            };
+            
+            const selectedStyle = styles[styleName];
+            if (selectedStyle) {
+                Object.entries(selectedStyle).forEach(([varName, value]) => {
+                    document.documentElement.style.setProperty(varName, value);
+                    if (!pages[currentPage].styles) pages[currentPage].styles = {};
+                    pages[currentPage].styles[varName] = value;
+                });
+                showNotification(`✅ Estilo "${styleName}" aplicado`, 'success');
+            }
+        }
+
+        function generateCode() {
+            const codeData = {
+                version: '1.0',
+                generatedAt: new Date().toISOString(),
+                currentPage: currentPage,
+                pages: pages,
+                customStyles: {}
+            };
+            
+            const rootStyles = getComputedStyle(document.documentElement);
+            ['--primary', '--secondary', '--success', '--error', '--warning', '--background', '--surface', '--text-primary', '--text-secondary', '--border'].forEach(varName => {
+                codeData.customStyles[varName] = rootStyles.getPropertyValue(varName).trim();
+            });
+            
+            const codeOutput = JSON.stringify(codeData, null, 2);
+            document.getElementById('code-output-textarea').value = codeOutput;
+            document.getElementById('code-output-modal').classList.add('visible');
+        }
+
+        function closeCodeModal() {
+            document.getElementById('code-output-modal').classList.remove('visible');
+        }
+
+        function copyCodeToClipboard() {
+            const textarea = document.getElementById('code-output-textarea');
+            textarea.select();
+            document.execCommand('copy');
+            showNotification('✅ Código copiado al portapapeles', 'success');
+        }
+    </script>
 
     <script>
         const formFields = [
