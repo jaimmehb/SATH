@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Pro - Sistema de Diseño Profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        .editor-header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* BOTONES */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), var(--primary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        /* MAIN LAYOUT */
+        .editor-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            gap: 1rem;
+            padding: 1rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 1200px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PANELS */
+        .panel {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: var(--surface-light);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        /* SECCIONES DEL PANEL */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* CONTROLES */
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .color-value {
+            flex: 1;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        /* SELECTOR DE TEMAS */
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .theme-card {
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .theme-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-card.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .theme-preview {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .theme-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* SELECTOR DE ESTILOS */
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .style-btn {
+            padding: 0.75rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .style-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .style-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* RANGE SLIDER */
+        .range-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .range-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--background);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .range-value {
+            min-width: 50px;
+            text-align: right;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        /* AREA DE PREVISUALIZACION */
+        .preview-area {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .preview-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .preview-canvas {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 0 auto;
+            padding: 20mm;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .page-tab {
+            padding: 0.5rem 1rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .page-tab:hover {
+            border-color: var(--primary);
+        }
+
+        .page-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* ELEMENTOS EDITABLES */
+        .editable-element {
+            position: absolute;
+            cursor: move;
+            border: 2px dashed transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .editable-element:hover {
+            border-color: var(--primary);
+        }
+
+        .editable-element.selected {
+            border-color: var(--primary);
+            border-style: solid;
+        }
+
+        .element-controls {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            gap: 0.25rem;
+            background: var(--surface);
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .editable-element.selected .element-controls {
+            display: flex;
+        }
+
+        .element-control-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 6px;
+            background: var(--surface-light);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .element-control-btn:hover {
+            background: var(--primary);
+        }
+
+        /* MODAL DE CODIGO */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: var(--surface-light);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--background);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--error);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow: auto;
+            flex: 1;
+        }
+
+        .code-block {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 500px;
+            overflow: auto;
+        }
+
+        .copy-feedback {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* NOTIFICACIONES */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+
+        .notification.info {
+            background: var(--info);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* CHECKBOX Y RADIO */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-wrapper input {
+            display: none;
+        }
+
+        .checkbox-wrapper input:checked + .custom-checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkbox-wrapper input:checked + .custom-checkbox::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: 700;
+        }
+
+        /* SELECT */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        select.control-input {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        /* GRID DE DISEÑOS */
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .design-card {
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .design-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .design-card.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .design-preview {
+            height: 80px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .design-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* RESIZE HANDLES */
+        .resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .resize-handle.se {
+            bottom: -5px;
+            right: -5px;
+            cursor: se-resize;
+        }
+
+        .resize-handle.sw {
+            bottom: -5px;
+            left: -5px;
+            cursor: sw-resize;
+        }
+
+        .resize-handle.ne {
+            top: -5px;
+            right: -5px;
+            cursor: ne-resize;
+        }
+
+        .resize-handle.nw {
+            top: -5px;
+            left: -5px;
+            cursor: nw-resize;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="editor-header">
+        <div class="logo">
+            <span>🎨</span>
+            <span>Editor Pro</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="resetDesign()">
+                <span>🔄</span> Resetear
+            </button>
+            <button class="btn btn-info" onclick="duplicatePage()">
+                <span>📄</span> Duplicar Página
+            </button>
+            <button class="btn btn-warning" onclick="togglePreviewMode()">
+                <span>👁️</span> Vista Previa
+            </button>
+            <button class="btn btn-success" onclick="generateCode()">
+                <span>💻</span> Generar Código
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="editor-container">
+        <!-- LEFT PANEL - CONTROLES -->
+        <aside class="panel">
+            <div class="panel-header">
+                <span>⚙️</span> Controles de Diseño
+            </div>
+            <div class="panel-body">
+                <!-- TEMAS -->
+                <div class="section">
+                    <div class="section-title">
+                        <span>🎨</span> Temas Predefinidos
+                    </div>
+                    <div class="themes-grid">
+                        <div class="theme-card active" data-theme="dark" onclick="applyTheme('dark')">
+                            <div class="theme-preview">
+                                <div class="theme-dot" style="background: #0f172a;"></div>
+                                <div class="theme-dot" style="background: #1e293b;"></div>
+                                <div class="theme-dot" style="background: #6366f1;"></div>
+                            </div>
+                            <div class="theme-name">Dark Pro</div>
+                        </div>
+                        <div class="theme-card" data-theme="light" onclick="applyTheme('light')">
+                            <div class="theme-preview">
+                                <div class="theme-dot" style="background: #ffffff;"></div>
+                                <div class="theme-dot" style="background: #f3f4f6;"></div>
+                                <div class="theme-dot" style="background: #3b82f6;"></div>
+                            </div>
+                            <div class="theme-name">Light Clean</div>
+                        </div>
+                        <div class="theme-card" data-theme="nature" onclick="applyTheme('nature')">
+                            <div class="theme-preview">
+                                <div class="theme-dot" style="background: #064e3b;"></div>
+                                <div class="theme-dot" style="background: #10b981;"></div>
+                                <div class="theme-dot" style="background: #ecfdf5;"></div>
+                            </div>
+                            <div class="theme-name">Nature</div>
+                        </div>
+                        <div class="theme-card" data-theme="sunset" onclick="applyTheme('sunset')">
+                            <div class="theme-preview">
+                                <div class="theme-dot" style="background: #7c2d12;"></div>
+                                <div class="theme-dot" style="background: #f97316;"></div>
+                                <div class="theme-dot" style="background: #fef3c7;"></div>
+                            </div>
+                            <div class="theme-name">Sunset</div>
+                        </div>
+                        <div class="theme-card" data-theme="ocean" onclick="applyTheme('ocean')">
+                            <div class="theme-preview">
+                                <div class="theme-dot" style="background: #0c4a6e;"></div>
+                                <div class="theme-dot" style="background: #0ea5e9;"></div>
+                                <div class="theme-dot" style="background: #f0f9ff;"></div>
+                            </div>
+                            <div class="theme-name">Ocean</div>
+                        </div>
+                        <div class="theme-card" data-theme="berry" onclick="applyTheme('berry')">
+                            <div class="theme-preview">
+                                <div class="theme-dot" style="background: #831843;"></div>
+                                <div class="theme-dot" style="background: #ec4899;"></div>
+                                <div class="theme-dot" style="background: #fdf2f8;"></div>
+                            </div>
+                            <div class="theme-name">Berry</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLORES -->
+                <div class="section">
+                    <div class="section-title">
+                        <span>🌈</span> Colores Personalizados
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Color Primario</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" class="color-picker" id="primaryColor" value="#6366f1" onchange="updateColor('primary', this.value)">
+                            <input type="text" class="control-input color-value" id="primaryColorText" value="#6366f1" onchange="updateColor('primary', this.value)">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Color Secundario</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" class="color-picker" id="secondaryColor" value="#64748b" onchange="updateColor('secondary', this.value)">
+                            <input type="text" class="control-input color-value" id="secondaryColorText" value="#64748b" onchange="updateColor('secondary', this.value)">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Color Fondo</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" class="color-picker" id="backgroundColor" value="#0f172a" onchange="updateColor('background', this.value)">
+                            <input type="text" class="control-input color-value" id="backgroundColorText" value="#0f172a" onchange="updateColor('background', this.value)">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Color Superficie</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" class="color-picker" id="surfaceColor" value="#1e293b" onchange="updateColor('surface', this.value)">
+                            <input type="text" class="control-input color-value" id="surfaceColorText" value="#1e293b" onchange="updateColor('surface', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIPOGRAFIA -->
+                <div class="section">
+                    <div class="section-title">
+                        <span>📝</span> Tipografía
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Fuente Principal</label>
+                        <div class="select-wrapper">
+                            <select class="control-input" id="fontFamily" onchange="updateFont()">
+                                <option value="Inter">Inter</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Impact">Impact</option>
+                                <option value="Comic Sans MS">Comic Sans MS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Tamaño Base: <span id="fontSizeValue">16</span>px</label>
+                        <div class="range-wrapper">
+                            <input type="range" class="range-slider" id="fontSize" min="12" max="24" value="16" oninput="updateFontSize()">
+                            <span class="range-value" id="fontSizeDisplay">16px</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BORDES -->
+                <div class="section">
+                    <div class="section-title">
+                        <span>🔲</span> Bordes y Radio
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Radio de Borde: <span id="borderRadiusValue">12</span>px</label>
+                        <div class="range-wrapper">
+                            <input type="range" class="range-slider" id="borderRadius" min="0" max="24" value="12" oninput="updateBorderRadius()">
+                            <span class="range-value" id="borderRadiusDisplay">12px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER - PREVIEW -->
+        <main class="preview-area">
+            <div class="preview-toolbar">
+                <div class="page-tabs" id="pageTabs">
+                    <div class="page-tab active" data-page="0" onclick="switchPage(0)">Página 1</div>
+                </div>
+                <div>
+                    <button class="btn btn-secondary" onclick="addElement('text')">+ Texto</button>
+                    <button class="btn btn-secondary" onclick="addElement('title')">+ Título</button>
+                    <button class="btn btn-secondary" onclick="addElement('subtitle')">+ Subtítulo</button>
+                    <button class="btn btn-secondary" onclick="addElement('box')">+ Caja</button>
+                </div>
+            </div>
+            <div class="preview-canvas" id="previewCanvas">
+                <div class="page" id="page_0">
+                    <!-- Elementos editables se agregarán aquí -->
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT PANEL - PROPIEDADES -->
+        <aside class="panel">
+            <div class="panel-header">
+                <span>📐</span> Propiedades del Elemento
+            </div>
+            <div class="panel-body">
+                <div id="elementProperties" style="display: none;">
+                    <div class="section">
+                        <div class="section-title">
+                            <span>✏️</span> Contenido
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Texto</label>
+                            <textarea class="control-input" id="elemText" rows="3" oninput="updateElementText()"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            <span>📏</span> Tamaño y Posición
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Tamaño Fuente: <span id="elemFontSizeValue">16</span>px</label>
+                            <div class="range-wrapper">
+                                <input type="range" class="range-slider" id="elemFontSize" min="10" max="72" value="16" oninput="updateElementFontSize()">
+                                <span class="range-value" id="elemFontSizeDisplay">16px</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Color Texto</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" class="color-picker" id="elemTextColor" value="#000000" onchange="updateElementColor()">
+                                <input type="text" class="control-input color-value" id="elemTextColorText" value="#000000" onchange="updateElementColor()">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Alineación</label>
+                            <div class="styles-grid">
+                                <button class="style-btn" onclick="updateElementAlign('left')">Izquierda</button>
+                                <button class="style-btn" onclick="updateElementAlign('center')">Centro</button>
+                                <button class="style-btn" onclick="updateElementAlign('right')">Derecha</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            <span>🎨</span> Estilo
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Peso Fuente</label>
+                            <div class="styles-grid">
+                                <button class="style-btn" onclick="updateElementWeight('400')">Normal</button>
+                                <button class="style-btn" onclick="updateElementWeight('600')">Bold</button>
+                                <button class="style-btn" onclick="updateElementWeight('900')">Black</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Fondo</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" class="color-picker" id="elemBgColor" value="#ffffff" onchange="updateElementBgColor()">
+                                <input type="text" class="control-input color-value" id="elemBgColorText" value="#ffffff" onchange="updateElementBgColor()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            <span>⚠️</span> Acciones
+                        </div>
+                        <button class="btn btn-error" style="width: 100%; background: var(--error);" onclick="deleteSelectedElement()">
+                            🗑️ Eliminar Elemento
+                        </button>
+                    </div>
+                </div>
+
+                <div id="noSelection" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                    <p style="font-size: 3rem; margin-bottom: 1rem;">👆</p>
+                    <p>Selecciona un elemento para editar sus propiedades</p>
+                </div>
+
+                <!-- DISEÑOS PREDEFINIDOS -->
+                <div class="section">
+                    <div class="section-title">
+                        <span>📋</span> Diseños Rápidos
+                    </div>
+                    <div class="designs-grid">
+                        <div class="design-card" onclick="applyDesign('minimal')">
+                            <div class="design-preview" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0);"></div>
+                            <div class="design-name">Minimal</div>
+                        </div>
+                        <div class="design-card" onclick="applyDesign('corporate')">
+                            <div class="design-preview" style="background: linear-gradient(135deg, #1e3a5f, #3b82f6);"></div>
+                            <div class="design-name">Corporativo</div>
+                        </div>
+                        <div class="design-card" onclick="applyDesign('creative')">
+                            <div class="design-preview" style="background: linear-gradient(135deg, #7c3aed, #ec4899);"></div>
+                            <div class="design-name">Creativo</div>
+                        </div>
+                        <div class="design-card" onclick="applyDesign('elegant')">
+                            <div class="design-preview" style="background: linear-gradient(135deg, #1f2937, #fbbf24);"></div>
+                            <div class="design-name">Elegante</div>
+                        </div>
+                        <div class="design-card" onclick="applyDesign('modern')">
+                            <div class="design-preview" style="background: linear-gradient(135deg, #0f172a, #06b6d4);"></div>
+                            <div class="design-name">Moderno</div>
+                        </div>
+                        <div class="design-card" onclick="applyDesign('retro')">
+                            <div class="design-preview" style="background: linear-gradient(135deg, #c2410c, #fcd34d);"></div>
+                            <div class="design-name">Retro</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MODAL DE CODIGO -->
+    <div class="modal-overlay" id="codeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">💻 Código Generado</h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    Copia este código y pégalo donde necesites aplicar tus cambios:
+                </p>
+                <pre class="code-block" id="generatedCode"></pre>
+                <button class="btn btn-success" style="width: 100%; margin-top: 1rem;" onclick="copyCode()">
+                    📋 Copiar Código
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ESTADO GLOBAL
+        let currentPage = 0;
+        let totalPages = 1;
+        let selectedElement = null;
+        let elementCounter = 0;
+        let pages = {};
+        let isPreviewMode = false;
+
+        // INICIALIZAR
+        document.addEventListener('DOMContentLoaded', function() {
+            pages[0] = document.getElementById('page_0');
+            updatePageTabs();
+        });
+
+        // APLICAR TEMA
+        function applyTheme(themeName) {
+            const themes = {
+                dark: { primary: '#6366f1', secondary: '#64748b', background: '#0f172a', surface: '#1e293b' },
+                light: { primary: '#3b82f6', secondary: '#9ca3af', background: '#ffffff', surface: '#f3f4f6' },
+                nature: { primary: '#10b981', secondary: '#059669', background: '#ecfdf5', surface: '#d1fae5' },
+                sunset: { primary: '#f97316', secondary: '#ea580c', background: '#fef3c7', surface: '#fed7aa' },
+                ocean: { primary: '#0ea5e9', secondary: '#0284c7', background: '#f0f9ff', surface: '#e0f2fe' },
+                berry: { primary: '#ec4899', secondary: '#db2777', background: '#fdf2f8', surface: '#fce7f3' }
+            };
+
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            // Actualizar variables CSS
+            document.documentElement.style.setProperty('--primary', theme.primary);
+            document.documentElement.style.setProperty('--secondary', theme.secondary);
+            document.documentElement.style.setProperty('--background', theme.background);
+            document.documentElement.style.setProperty('--surface', theme.surface);
+
+            // Actualizar inputs de color
+            document.getElementById('primaryColor').value = theme.primary;
+            document.getElementById('primaryColorText').value = theme.primary;
+            document.getElementById('secondaryColor').value = theme.secondary;
+            document.getElementById('secondaryColorText').value = theme.secondary;
+            document.getElementById('backgroundColor').value = theme.background;
+            document.getElementById('backgroundColorText').value = theme.background;
+            document.getElementById('surfaceColor').value = theme.surface;
+            document.getElementById('surfaceColorText').value = theme.surface;
+
+            // Actualizar UI de temas
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-theme="${themeName}"]`).classList.add('active');
+
+            showNotification(`Tema "${themeName}" aplicado`, 'success');
+        }
+
+        // ACTUALIZAR COLOR
+        function updateColor(type, value) {
+            const cssVar = `--${type}`;
+            document.documentElement.style.setProperty(cssVar, value);
+            
+            // Sincronizar inputs
+            const colorInput = document.getElementById(`${type}Color`);
+            const textInput = document.getElementById(`${type}ColorText`);
+            
+            if (colorInput && colorInput.value !== value) colorInput.value = value;
+            if (textInput && textInput.value !== value) textInput.value = value;
+        }
+
+        // ACTUALIZAR FUENTE
+        function updateFont() {
+            const fontFamily = document.getElementById('fontFamily').value;
+            document.body.style.fontFamily = `'${fontFamily}', system-ui, sans-serif`;
+        }
+
+        // ACTUALIZAR TAMAÑO DE FUENTE
+        function updateFontSize() {
+            const size = document.getElementById('fontSize').value;
+            document.getElementById('fontSizeValue').textContent = size;
+            document.getElementById('fontSizeDisplay').textContent = `${size}px`;
+            document.body.style.fontSize = `${size}px`;
+        }
+
+        // ACTUALIZAR RADIO DE BORDE
+        function updateBorderRadius() {
+            const radius = document.getElementById('borderRadius').value;
+            document.getElementById('borderRadiusValue').textContent = radius;
+            document.getElementById('borderRadiusDisplay').textContent = `${radius}px`;
+            document.documentElement.style.setProperty('--radius', `${radius}px`);
+        }
+
+        // AGREGAR ELEMENTO
+        function addElement(type) {
+            const page = pages[currentPage];
+            const element = document.createElement('div');
+            element.className = 'editable-element';
+            element.id = `elem_${elementCounter++}`;
+            element.style.top = '100px';
+            element.style.left = '100px';
+            element.style.minWidth = '100px';
+            element.style.minHeight = '30px';
+
+            let content = '';
+            let styles = '';
+
+            switch(type) {
+                case 'text':
+                    content = 'Texto editable';
+                    styles = 'font-size: 16px; color: #000000;';
+                    break;
+                case 'title':
+                    content = 'TÍTULO PRINCIPAL';
+                    styles = 'font-size: 32px; font-weight: 900; color: #000000;';
+                    break;
+                case 'subtitle':
+                    content = 'Subtítulo secundario';
+                    styles = 'font-size: 24px; font-weight: 600; color: #333333;';
+                    break;
+                case 'box':
+                    content = '';
+                    styles = 'width: 200px; height: 150px; background: #f3f4f6; border: 2px solid #e5e7eb;';
+                    break;
+            }
+
+            element.innerHTML = `
+                ${content}
+                <div class="element-controls">
+                    <button class="element-control-btn" onclick="bringToFront('${element.id}')" title="Traer al frente">⬆️</button>
+                    <button class="element-control-btn" onclick="sendToBack('${element.id}')" title="Enviar al fondo">⬇️</button>
+                    <button class="element-control-btn" onclick="duplicateElement('${element.id}')" title="Duplicar">📋</button>
+                </div>
+                <div class="resize-handle se"></div>
+            `;
+            element.style.cssText += styles;
+
+            // Hacer arrastrable
+            makeDraggable(element);
+            
+            // Hacer redimensionable
+            makeResizable(element);
+
+            // Click para seleccionar
+            element.addEventListener('click', function(e) {
+                e.stopPropagation();
+                selectElement(element);
+            });
+
+            page.appendChild(element);
+            selectElement(element);
+            showNotification('Elemento agregado', 'success');
+        }
+
+        // HACER ARRASTRABLE
+        function makeDraggable(element) {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            element.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('resize-handle') || e.target.classList.contains('element-control-btn')) return;
+                
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = parseInt(element.style.left || 0);
+                initialTop = parseInt(element.style.top || 0);
+                element.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                element.style.left = `${initialLeft + dx}px`;
+                element.style.top = `${initialTop + dy}px`;
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                element.style.cursor = 'move';
+            });
+        }
+
+        // HACER REDIMENSIONABLE
+        function makeResizable(element) {
+            const handle = element.querySelector('.resize-handle');
+            if (!handle) return;
+
+            let isResizing = false;
+            let startX, startY, startWidth, startHeight;
+
+            handle.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                isResizing = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = parseInt(document.defaultView.getComputedStyle(element).width);
+                startHeight = parseInt(document.defaultView.getComputedStyle(element).height);
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isResizing) return;
+                
+                const width = startWidth + (e.clientX - startX);
+                const height = startHeight + (e.clientY - startY);
+                
+                if (width > 20) element.style.width = `${width}px`;
+                if (height > 20) element.style.height = `${height}px`;
+            });
+
+            document.addEventListener('mouseup', function() {
+                isResizing = false;
+            });
+        }
+
+        // SELECCIONAR ELEMENTO
+        function selectElement(element) {
+            // Deseleccionar anterior
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+            }
+
+            selectedElement = element;
+            element.classList.add('selected');
+
+            // Mostrar panel de propiedades
+            document.getElementById('noSelection').style.display = 'none';
+            document.getElementById('elementProperties').style.display = 'block';
+
+            // Cargar valores actuales
+            const text = element.childNodes[0]?.textContent?.trim() || '';
+            document.getElementById('elemText').value = text;
+
+            const computedStyle = window.getComputedStyle(element);
+            const fontSize = parseInt(computedStyle.fontSize);
+            document.getElementById('elemFontSize').value = fontSize;
+            document.getElementById('elemFontSizeValue').textContent = fontSize;
+            document.getElementById('elemFontSizeDisplay').textContent = `${fontSize}px`;
+
+            // Convertir RGB a Hex para color picker
+            const rgbColor = computedStyle.color;
+            const hexColor = rgbToHex(rgbColor);
+            document.getElementById('elemTextColor').value = hexColor;
+            document.getElementById('elemTextColorText').value = hexColor;
+
+            const bgColor = computedStyle.backgroundColor;
+            const bgHex = rgbToHex(bgColor);
+            document.getElementById('elemBgColor').value = bgHex || '#ffffff';
+            document.getElementById('elemBgColorText').value = bgHex || '#ffffff';
+        }
+
+        // CONVERTIR RGB A HEX
+        function rgbToHex(rgb) {
+            if (!rgb || rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return '#ffffff';
+            
+            const match = rgb.match(/\d+/g);
+            if (!match) return '#000000';
+            
+            const r = parseInt(match[0]);
+            const g = parseInt(match[1]);
+            const b = parseInt(match[2]);
+            
+            return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ACTUALIZAR TEXTO DEL ELEMENTO
+        function updateElementText() {
+            if (!selectedElement) return;
+            const text = document.getElementById('elemText').value;
+            const controls = selectedElement.querySelector('.element-controls');
+            const handles = selectedElement.querySelectorAll('.resize-handle');
+            selectedElement.innerHTML = text;
+            if (controls) selectedElement.appendChild(controls);
+            handles.forEach(h => selectedElement.appendChild(h));
+        }
+
+        // ACTUALIZAR TAMAÑO DE FUENTE DEL ELEMENTO
+        function updateElementFontSize() {
+            if (!selectedElement) return;
+            const size = document.getElementById('elemFontSize').value;
+            document.getElementById('elemFontSizeValue').textContent = size;
+            document.getElementById('elemFontSizeDisplay').textContent = `${size}px`;
+            selectedElement.style.fontSize = `${size}px`;
+        }
+
+        // ACTUALIZAR COLOR DEL ELEMENTO
+        function updateElementColor() {
+            if (!selectedElement) return;
+            const color = document.getElementById('elemTextColor').value;
+            document.getElementById('elemTextColorText').value = color;
+            selectedElement.style.color = color;
+        }
+
+        // ACTUALIZAR COLOR DE FONDO DEL ELEMENTO
+        function updateElementBgColor() {
+            if (!selectedElement) return;
+            const color = document.getElementById('elemBgColor').value;
+            document.getElementById('elemBgColorText').value = color;
+            selectedElement.style.backgroundColor = color;
+        }
+
+        // ACTUALIZAR ALINEACIÓN
+        function updateElementAlign(align) {
+            if (!selectedElement) return;
+            selectedElement.style.textAlign = align;
+        }
+
+        // ACTUALIZAR PESO DE FUENTE
+        function updateElementWeight(weight) {
+            if (!selectedElement) return;
+            selectedElement.style.fontWeight = weight;
+        }
+
+        // ELIMINAR ELEMENTO SELECCIONADO
+        function deleteSelectedElement() {
+            if (!selectedElement) return;
+            selectedElement.remove();
+            selectedElement = null;
+            document.getElementById('noSelection').style.display = 'block';
+            document.getElementById('elementProperties').style.display = 'none';
+            showNotification('Elemento eliminado', 'info');
+        }
+
+        // TRAER AL FRENTE
+        function bringToFront(id) {
+            const element = document.getElementById(id);
+            if (element) element.style.zIndex = parseInt(element.style.zIndex || 1) + 1;
+        }
+
+        // ENVIAR AL FONDO
+        function sendToBack(id) {
+            const element = document.getElementById(id);
+            if (element) element.style.zIndex = Math.max(0, (parseInt(element.style.zIndex || 1)) - 1);
+        }
+
+        // DUPLICAR ELEMENTO
+        function duplicateElement(id) {
+            const element = document.getElementById(id);
+            if (!element) return;
+
+            const clone = element.cloneNode(true);
+            clone.id = `elem_${elementCounter++}`;
+            clone.style.top = parseInt(element.style.top || 0) + 20 + 'px';
+            clone.style.left = parseInt(element.style.left || 0) + 20 + 'px';
+
+            makeDraggable(clone);
+            makeResizable(clone);
+            clone.addEventListener('click', function(e) {
+                e.stopPropagation();
+                selectElement(clone);
+            });
+
+            pages[currentPage].appendChild(clone);
+            selectElement(clone);
+            showNotification('Elemento duplicado', 'success');
+        }
+
+        // CAMBIAR PÁGINA
+        function switchPage(pageNum) {
+            currentPage = pageNum;
+            
+            // Actualizar tabs
+            document.querySelectorAll('.page-tab').forEach(tab => {
+                tab.classList.toggle('active', parseInt(tab.dataset.page) === pageNum);
+            });
+
+            // Mostrar página correcta
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            pages[pageNum].style.display = 'block';
+
+            // Deseleccionar elemento
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+                selectedElement = null;
+            }
+            document.getElementById('noSelection').style.display = 'block';
+            document.getElementById('elementProperties').style.display = 'none';
+        }
+
+        // DUPLICAR PÁGINA
+        function duplicatePage() {
+            const newPageNum = totalPages++;
+            const newPage = document.createElement('div');
+            newPage.className = 'page';
+            newPage.id = `page_${newPageNum}`;
+            newPage.style.display = 'none';
+
+            // Copiar elementos de la página actual
+            const currentElements = pages[currentPage].children;
+            for (let elem of currentElements) {
+                const clone = elem.cloneNode(true);
+                clone.id = `elem_${elementCounter++}`;
+                makeDraggable(clone);
+                makeResizable(clone);
+                clone.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    selectElement(clone);
+                });
+                newPage.appendChild(clone);
+            }
+
+            document.getElementById('previewCanvas').appendChild(newPage);
+            pages[newPageNum] = newPage;
+
+            // Agregar tab
+            const newTab = document.createElement('div');
+            newTab.className = 'page-tab';
+            newTab.dataset.page = newPageNum;
+            newTab.textContent = `Página ${newPageNum + 1}`;
+            newTab.onclick = () => switchPage(newPageNum);
+            document.getElementById('pageTabs').appendChild(newTab);
+
+            // Cambiar a la nueva página
+            switchPage(newPageNum);
+            updatePageTabs();
+            showNotification(`Página ${newPageNum + 1} creada`, 'success');
+        }
+
+        // ACTUALIZAR TABS DE PÁGINAS
+        function updatePageTabs() {
+            // Lógica para actualizar visualmente las tabs si es necesario
+        }
+
+        // APLICAR DISEÑO RÁPIDO
+        function applyDesign(designName) {
+            const designs = {
+                minimal: {
+                    elements: [
+                        { type: 'title', text: 'Diseño Minimal', top: 50, left: 50, fontSize: 36, color: '#1f2937' },
+                        { type: 'text', text: 'Menos es más', top: 120, left: 50, fontSize: 18, color: '#6b7280' }
+                    ]
+                },
+                corporate: {
+                    elements: [
+                        { type: 'title', text: 'CORPORATIVO', top: 50, left: 50, fontSize: 40, color: '#1e3a5f', weight: '900' },
+                        { type: 'subtitle', text: 'Soluciones Profesionales', top: 120, left: 50, fontSize: 24, color: '#3b82f6' },
+                        { type: 'box', text: '', top: 180, left: 50, width: 500, height: 200, bg: '#f3f4f6' }
+                    ]
+                },
+                creative: {
+                    elements: [
+                        { type: 'title', text: 'CREATIVO', top: 50, left: 50, fontSize: 48, color: '#7c3aed', weight: '900' },
+                        { type: 'text', text: 'Piensa fuera de la caja', top: 130, left: 50, fontSize: 20, color: '#ec4899' }
+                    ]
+                },
+                elegant: {
+                    elements: [
+                        { type: 'title', text: 'Elegancia', top: 50, left: 50, fontSize: 42, color: '#1f2937', weight: '400' },
+                        { type: 'subtitle', text: 'Sofisticación en cada detalle', top: 120, left: 50, fontSize: 20, color: '#fbbf24' }
+                    ]
+                },
+                modern: {
+                    elements: [
+                        { type: 'title', text: 'MODERNO', top: 50, left: 50, fontSize: 44, color: '#0f172a', weight: '900' },
+                        { type: 'text', text: 'El futuro es ahora', top: 120, left: 50, fontSize: 22, color: '#06b6d4' }
+                    ]
+                },
+                retro: {
+                    elements: [
+                        { type: 'title', text: 'RETRO', top: 50, left: 50, fontSize: 50, color: '#c2410c', weight: '900' },
+                        { type: 'subtitle', text: 'Estilo clásico', top: 130, left: 50, fontSize: 24, color: '#fcd34d' }
+                    ]
+                }
+            };
+
+            const design = designs[designName];
+            if (!design) return;
+
+            // Limpiar página actual
+            const page = pages[currentPage];
+            page.innerHTML = '';
+            elementCounter = 0;
+
+            // Aplicar elementos del diseño
+            design.elements.forEach(elemConfig => {
+                const element = document.createElement('div');
+                element.className = 'editable-element';
+                element.id = `elem_${elementCounter++}`;
+                element.style.top = `${elemConfig.top}px`;
+                element.style.left = `${elemConfig.left}px`;
+
+                if (elemConfig.type === 'box') {
+                    element.style.width = `${elemConfig.width}px`;
+                    element.style.height = `${elemConfig.height}px`;
+                    element.style.backgroundColor = elemConfig.bg || '#f3f4f6';
+                } else {
+                    element.textContent = elemConfig.text;
+                    element.style.fontSize = `${elemConfig.fontSize}px`;
+                    element.style.color = elemConfig.color || '#000000';
+                    if (elemConfig.weight) element.style.fontWeight = elemConfig.weight;
+                }
+
+                element.innerHTML += `
+                    <div class="element-controls">
+                        <button class="element-control-btn" onclick="bringToFront('${element.id}')">⬆️</button>
+                        <button class="element-control-btn" onclick="sendToBack('${element.id}')">⬇️</button>
+                        <button class="element-control-btn" onclick="duplicateElement('${element.id}')">📋</button>
+                    </div>
+                    <div class="resize-handle se"></div>
+                `;
+
+                makeDraggable(element);
+                makeResizable(element);
+                element.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    selectElement(element);
+                });
+
+                page.appendChild(element);
+            });
+
+            showNotification(`Diseño "${designName}" aplicado`, 'success');
+        }
+
+        // MODO VISTA PREVIA
+        function togglePreviewMode() {
+            isPreviewMode = !isPreviewMode;
+            
+            if (isPreviewMode) {
+                // Ocultar controles
+                document.querySelectorAll('.editable-element').forEach(el => {
+                    el.style.border = 'none';
+                    el.style.cursor = 'default';
+                    const controls = el.querySelector('.element-controls');
+                    if (controls) controls.style.display = 'none';
+                    const handles = el.querySelectorAll('.resize-handle');
+                    handles.forEach(h => h.style.display = 'none');
+                });
+                
+                document.querySelector('.btn-warning').innerHTML = '<span>✏️</span> Editar';
+                showNotification('Modo Vista Previa activado', 'info');
+            } else {
+                // Mostrar controles
+                document.querySelectorAll('.editable-element').forEach(el => {
+                    el.style.border = '2px dashed transparent';
+                    el.style.cursor = 'move';
+                    if (el.classList.contains('selected')) {
+                        const controls = el.querySelector('.element-controls');
+                        if (controls) controls.style.display = 'flex';
+                    }
+                    const handles = el.querySelectorAll('.resize-handle');
+                    handles.forEach(h => h.style.display = 'block');
+                });
+                
+                document.querySelector('.btn-warning').innerHTML = '<span>👁️</span> Vista Previa';
+                showNotification('Modo Editor activado', 'success');
+            }
+        }
+
+        // GENERAR CÓDIGO
+        function generateCode() {
+            const codeData = {
+                theme: {
+                    primary: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim(),
+                    secondary: getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim(),
+                    background: getComputedStyle(document.documentElement).getPropertyValue('--background').trim(),
+                    surface: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()
+                },
+                pages: []
+            };
+
+            // Recopilar datos de cada página
+            for (let pageNum in pages) {
+                const page = pages[pageNum];
+                const pageData = {
+                    pageNumber: parseInt(pageNum) + 1,
+                    elements: []
+                };
+
+                page.querySelectorAll('.editable-element').forEach(el => {
+                    const elementData = {
+                        id: el.id,
+                        type: el.classList.contains('box') && !el.textContent.trim() ? 'box' : 
+                              el.style.fontSize.includes('32') ? 'title' :
+                              el.style.fontSize.includes('24') ? 'subtitle' : 'text',
+                        content: el.childNodes[0]?.textContent?.trim() || '',
+                        styles: {
+                            top: el.style.top,
+                            left: el.style.left,
+                            width: el.style.width,
+                            height: el.style.height,
+                            fontSize: el.style.fontSize,
+                            fontWeight: el.style.fontWeight,
+                            color: el.style.color,
+                            backgroundColor: el.style.backgroundColor,
+                            textAlign: el.style.textAlign,
+                            zIndex: el.style.zIndex
+                        }
+                    };
+                    pageData.elements.push(elementData);
+                });
+
+                codeData.pages.push(pageData);
+            }
+
+            // Generar string JSON formateado
+            const codeString = JSON.stringify(codeData, null, 2);
+            document.getElementById('generatedCode').textContent = codeString;
+            document.getElementById('codeModal').classList.add('active');
+        }
+
+        // CERRAR MODAL
+        function closeModal() {
+            document.getElementById('codeModal').classList.remove('active');
+        }
+
+        // COPIAR CÓDIGO
+        function copyCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('¡Código copiado al portapapeles!', 'success');
+                
+                // Crear feedback visual
+                const feedback = document.createElement('div');
+                feedback.className = 'copy-feedback';
+                feedback.textContent = '✅ ¡Código copiado!';
+                document.body.appendChild(feedback);
+                
+                setTimeout(() => feedback.remove(), 2000);
+            }).catch(err => {
+                showNotification('Error al copiar', 'error');
+            });
+        }
+
+        // RESETEAR DISEÑO
+        function resetDesign() {
+            if (!confirm('¿Estás seguro de resetear todo el diseño?')) return;
+
+            // Resetear variables CSS
+            document.documentElement.style.setProperty('--primary', '#6366f1');
+            document.documentElement.style.setProperty('--secondary', '#64748b');
+            document.documentElement.style.setProperty('--background', '#0f172a');
+            document.documentElement.style.setProperty('--surface', '#1e293b');
+
+            // Resetear inputs
+            document.getElementById('primaryColor').value = '#6366f1';
+            document.getElementById('primaryColorText').value = '#6366f1';
+            document.getElementById('secondaryColor').value = '#64748b';
+            document.getElementById('secondaryColorText').value = '#64748b';
+            document.getElementById('backgroundColor').value = '#0f172a';
+            document.getElementById('backgroundColorText').value = '#0f172a';
+            document.getElementById('surfaceColor').value = '#1e293b';
+            document.getElementById('surfaceColorText').value = '#1e293b';
+            document.getElementById('fontFamily').value = 'Inter';
+            document.getElementById('fontSize').value = 16;
+            document.getElementById('borderRadius').value = 12;
+
+            // Resetear cuerpo
+            document.body.style.fontFamily = "'Inter', system-ui, sans-serif";
+            document.body.style.fontSize = '16px';
+
+            // Limpiar páginas excepto la primera
+            for (let pageNum in pages) {
+                if (pageNum > 0) {
+                    pages[pageNum].remove();
+                    delete pages[pageNum];
+                } else {
+                    pages[0].innerHTML = '';
+                }
+            }
+
+            // Resetear tabs
+            document.getElementById('pageTabs').innerHTML = '<div class="page-tab active" data-page="0" onclick="switchPage(0)">Página 1</div>';
+            
+            currentPage = 0;
+            totalPages = 1;
+            elementCounter = 0;
+            selectedElement = null;
+
+            document.getElementById('noSelection').style.display = 'block';
+            document.getElementById('elementProperties').style.display = 'none';
+
+            showNotification('Diseño reseteado', 'info');
+        }
+
+        // MOSTRAR NOTIFICACIÓN
+        function showNotification(message, type = 'info') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // CLICK FUERA PARA DESELECCIONAR
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.editable-element') && !e.target.closest('#elementProperties')) {
+                if (selectedElement) {
+                    selectedElement.classList.remove('selected');
+                    selectedElement = null;
+                }
+                document.getElementById('noSelection').style.display = 'block';
+                document.getElementById('elementProperties').style.display = 'none';
+            }
+        });
+
+        // CERRAR MODAL CON ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
